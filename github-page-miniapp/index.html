@@ -2,292 +2,92 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mini App — Обращение в поддержку</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Поддержка</title>
     <style>
       :root {
-        --bg: #f3f4f6;
-        --card: #ffffff;
-        --text: #111827;
-        --muted: #6b7280;
-        --accent: #2563eb;
-        --accent-text: #ffffff;
-        --border: #e5e7eb;
-        --ok: #166534;
-        --ok-bg: #dcfce7;
-        --err: #991b1b;
-        --err-bg: #fee2e2;
+        --bg: #f3f4f6; --card: #ffffff; --text: #111827; --muted: #6b7280;
+        --accent: #2563eb; --accent-text: #ffffff; --border: #e5e7eb;
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
+      * { box-sizing: border-box; }
       body {
-        margin: 0;
-        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background: var(--bg);
-        color: var(--text);
+        margin: 0; font-family: Inter, -apple-system, sans-serif;
+        background: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent;
       }
-
-      .wrap {
-        max-width: 720px;
-        margin: 0 auto;
-        padding: 16px;
-      }
-
+      .wrap { max-width: 600px; margin: 0 auto; padding: 16px; }
       .card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 14px;
-        margin-bottom: 12px;
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 16px; padding: 18px;
       }
-
-      h1 {
-        margin: 0 0 8px;
-        font-size: 20px;
+      h1 { margin: 0 0 16px; font-size: 20px; font-weight: 700; text-align: center; }
+      label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--muted); }
+      
+      input, textarea, select, button {
+        width: 100%; border-radius: 12px; border: 1px solid var(--border);
+        padding: 12px; font-size: 15px; background: #fff; color: var(--text);
+        outline: none; transition: border-color 0.2s;
       }
-
-      .sub {
-        margin: 0;
-        color: var(--muted);
-        font-size: 14px;
-      }
-
-      .row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-
-      @media (max-width: 640px) {
-        .row {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      label {
-        display: block;
-        font-size: 13px;
-        margin-bottom: 6px;
-      }
-
-      input,
-      textarea,
-      select,
+      input:focus, textarea:focus { border-color: var(--accent); }
+      textarea { min-height: 160px; resize: none; }
+      
       button {
-        width: 100%;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        padding: 10px 12px;
-        font-size: 14px;
+        cursor: pointer; border: 0; background: var(--accent);
+        color: var(--accent-text); font-weight: 600; margin-top: 20px;
       }
-
-      textarea {
-        min-height: 140px;
-        resize: vertical;
-      }
-
-      button {
-        cursor: pointer;
-        border: 0;
-        background: var(--accent);
-        color: var(--accent-text);
-        font-weight: 600;
-      }
-
-      button:disabled {
-        opacity: 0.65;
-        cursor: not-allowed;
-      }
-
-      .status {
-        font-size: 13px;
-        padding: 8px 10px;
-        border-radius: 8px;
-        margin-top: 8px;
-      }
-
-      .ok {
-        background: var(--ok-bg);
-        color: var(--ok);
-      }
-
-      .err {
-        background: var(--err-bg);
-        color: var(--err);
-      }
+      button:active { opacity: 0.8; }
     </style>
   </head>
   <body>
     <div class="wrap">
       <div class="card">
-        <h1>Создание обращения</h1>
-        <p class="sub">Mini App для Max.ru, размещение на GitHub Pages</p>
+        <h1>Новое обращение</h1>
+        
+        <form id="ticketForm">
+          <label for="category">Категория</label>
+          <select id="category" style="margin-bottom: 16px;">
+            <option value="technical">Техническая поддержка</option>
+            <option value="question">Связаться с менеджером</option>
+            <option value="other">Другое</option>
+          </select>
+
+          <label for="title">Тема</label>
+          <input id="title" maxlength="120" required placeholder="Кратко назовите проблему" style="margin-bottom: 16px;" />
+
+          <label for="description">Описание</label>
+          <textarea id="description" maxlength="2000" required placeholder="Подробно опишите вашу ситуацию..."></textarea>
+
+          <button id="submitBtn" type="submit">Отправить боту</button>
+        </form>
       </div>
-
-      <div class="card">
-        <div class="row">
-          <div>
-            <label for="apiBase">API base URL (backend)</label>
-            <input id="apiBase" placeholder="https://api.example.com" />
-          </div>
-          <div>
-            <label for="category">Категория</label>
-            <select id="category">
-              <option value="technical">Тех. поддержка</option>
-              <option value="question">Менеджер</option>
-            </select>
-          </div>
-        </div>
-        <div id="runtimeStatus" class="status"></div>
-      </div>
-
-      <form id="ticketForm" class="card">
-        <label for="title">Тема</label>
-        <input id="title" maxlength="120" required placeholder="Например: не открывается личный кабинет" />
-
-        <label for="description" style="margin-top: 10px;">Описание</label>
-        <textarea id="description" maxlength="2000" required placeholder="Опишите проблему подробнее..."></textarea>
-
-        <button id="submitBtn" type="submit" style="margin-top: 12px;">Отправить обращение</button>
-        <div id="submitStatus" class="status" style="display: none;"></div>
-      </form>
     </div>
 
     <script>
       (function () {
-        const runtimeStatus = document.getElementById("runtimeStatus");
-        const submitStatus = document.getElementById("submitStatus");
-        const submitBtn = document.getElementById("submitBtn");
         const ticketForm = document.getElementById("ticketForm");
-        const apiBaseInput = document.getElementById("apiBase");
-
-        const webApp = window.WebApp || null;
-        const initData = webApp?.initData || "";
-        const initDataUnsafe = webApp?.initDataUnsafe || {};
-        const queryApiBase = new URLSearchParams(window.location.search).get("api_base");
-        const savedApiBase = localStorage.getItem("miniapp_api_base") || "";
-        const apiBaseUrl = (queryApiBase || savedApiBase || "").replace(/\/$/, "");
-        apiBaseInput.value = apiBaseUrl;
-
-        function showStatus(node, text, isError) {
-          node.style.display = "block";
-          node.textContent = text;
-          node.className = "status " + (isError ? "err" : "ok");
-        }
-
-        function sanitizeApiBase(value) {
-          return String(value || "").trim().replace(/\/$/, "");
-        }
+        const webApp = window.WebApp || window.Telegram?.WebApp || null;
 
         if (webApp) {
           webApp.ready();
-          try {
-            if (webApp.BackButton) {
-              webApp.BackButton.show();
-              webApp.BackButton.onClick(function () {
-                webApp.close();
-              });
-            }
-          } catch (_) {}
-
-          showStatus(runtimeStatus, "Mini App открыт внутри Max.ru", false);
-        } else {
-          showStatus(runtimeStatus, "Открыто вне Max.ru (режим теста)", true);
+          webApp.expand?.(); // Разворачиваем на весь экран
         }
 
-        apiBaseInput.addEventListener("change", function () {
-          const normalized = sanitizeApiBase(apiBaseInput.value);
-          apiBaseInput.value = normalized;
-          localStorage.setItem("miniapp_api_base", normalized);
-        });
-
-        async function validateInitData(baseUrl) {
-          if (!initData) return true;
-
-          const response = await fetch(baseUrl + "/api/max/miniapp/validate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ initData }),
-          });
-
-          const payload = await response.json();
-          if (!response.ok || !payload?.isValid) {
-            throw new Error(payload?.error || "Не удалось валидировать initData");
-          }
-        }
-
-        ticketForm.addEventListener("submit", async function (event) {
+        ticketForm.addEventListener("submit", function (event) {
           event.preventDefault();
-          submitBtn.disabled = true;
-          submitStatus.style.display = "none";
 
-          try {
-            const apiBase = sanitizeApiBase(apiBaseInput.value);
-            if (!apiBase) {
-              throw new Error("Укажите API base URL");
-            }
+          const data = {
+            action: "create_ticket",
+            title: document.getElementById("title").value.trim(),
+            description: document.getElementById("description").value.trim(),
+            category: document.getElementById("category").value
+          };
 
-            localStorage.setItem("miniapp_api_base", apiBase);
-
-            await validateInitData(apiBase);
-
-            const title = document.getElementById("title").value.trim();
-            const description = document.getElementById("description").value.trim();
-            const category = document.getElementById("category").value;
-
-            if (!title || !description) {
-              throw new Error("Заполните тему и описание");
-            }
-
-            const userId =
-              initDataUnsafe?.user?.id ||
-              (webApp ? null : "local_test_user");
-            const chatId =
-              initDataUnsafe?.chat?.id ||
-              initDataUnsafe?.chat?.chat_id ||
-              userId ||
-              "local_test_chat";
-            const clientId = "client_max_" + String(userId || chatId);
-
-            const ticketResponse = await fetch(apiBase + "/api/client/tickets", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                clientId,
-                ticket: {
-                  title,
-                  description,
-                  category,
-                  chatId: String(chatId),
-                  maxChatId: String(chatId),
-                  maxUserId: userId ? String(userId) : undefined,
-                  comments: [],
-                },
-              }),
-            });
-
-            const ticketPayload = await ticketResponse.json();
-            if (!ticketResponse.ok || !ticketPayload?.success) {
-              throw new Error(ticketPayload?.error || "Не удалось создать обращение");
-            }
-
-            const shortId = String(ticketPayload.ticket?.id || "").slice(-6) || "new";
-            showStatus(submitStatus, "Обращение #" + shortId + " создано", false);
-
-            try {
-              webApp?.HapticFeedback?.notificationOccurred?.("success");
-            } catch (_) {}
-
-            setTimeout(function () {
-              if (webApp?.close) webApp.close();
-            }, 1200);
-          } catch (error) {
-            showStatus(submitStatus, error.message || "Ошибка отправки", true);
-          } finally {
-            submitBtn.disabled = false;
+          if (webApp && webApp.sendData) {
+            // Метод преобразует объект в строку и отправляет боту
+            // Приложение при этом автоматически закроется
+            webApp.sendData(JSON.stringify(data));
+          } else {
+            console.log("Данные для отправки:", data);
+            alert("Ошибка: функция sendData доступна только внутри мессенджера.");
           }
         });
       })();
