@@ -4,20 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Поддержка</title>
+    <!-- Подключаем MAX WebApp SDK -->
+    <script src="https://st.max.ru/js/max-web-app.js"></script>
     <style>
       :root {
         --bg: #f3f4f6; --card: #ffffff; --text: #111827; --muted: #6b7280;
         --accent: #2563eb; --accent-text: #ffffff; --border: #e5e7eb;
+        --success: #10b981; --error: #ef4444;
       }
       * { box-sizing: border-box; }
       body {
-        margin: 0; font-family: Inter, -apple-system, sans-serif;
+        margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         background: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent;
+        padding-bottom: 24px;
       }
       .wrap { max-width: 600px; margin: 0 auto; padding: 16px; }
       .card {
         background: var(--card); border: 1px solid var(--border);
         border-radius: 16px; padding: 18px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       }
       h1 { margin: 0 0 16px; font-size: 20px; font-weight: 700; text-align: center; }
       label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--muted); }
@@ -25,28 +30,77 @@
       input, textarea, select, button {
         width: 100%; border-radius: 12px; border: 1px solid var(--border);
         padding: 12px; font-size: 15px; background: #fff; color: var(--text);
-        outline: none; transition: border-color 0.2s;
+        outline: none; transition: border-color 0.2s, box-shadow 0.2s;
       }
-      input:focus, textarea:focus { border-color: var(--accent); }
+      input:focus, textarea:focus, select:focus { 
+        border-color: var(--accent); 
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
       textarea { min-height: 160px; resize: none; }
       
       button {
         cursor: pointer; border: 0; background: var(--accent);
         color: var(--accent-text); font-weight: 600; margin-top: 20px;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
       }
-      button:active { opacity: 0.8; }
+      button:active { opacity: 0.9; }
+      button:disabled { 
+        background: var(--muted); 
+        cursor: not-allowed; 
+        opacity: 0.7; 
+      }
+      
+      /* Статусы */
+      .status {
+        margin-top: 16px; padding: 12px; border-radius: 12px;
+        font-size: 14px; display: none; text-align: center;
+      }
+      .status.success { 
+        background: rgba(16, 185, 129, 0.1); 
+        color: var(--success); 
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        display: block;
+      }
+      .status.error { 
+        background: rgba(239, 68, 68, 0.1); 
+        color: var(--error); 
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        display: block;
+      }
+      
+      /* Спиннер загрузки */
+      .spinner {
+        width: 16px; height: 16px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        display: none;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      button.loading .spinner { display: inline-block; }
+      button.loading span { opacity: 0.9; }
+      
+      /* Для тестирования вне мессенджера */
+      .dev-notice {
+        font-size: 12px; color: var(--muted); text-align: center;
+        margin-top: 12px; padding: 8px; background: rgba(255,193,7,0.1);
+        border-radius: 8px; display: none;
+      }
     </style>
   </head>
   <body>
     <div class="wrap">
       <div class="card">
-        <h1>Новое обращение</h1>
+        <h1>🎫 Новое обращение</h1>
         
         <form id="ticketForm">
           <label for="category">Категория</label>
-          <select id="category" style="margin-bottom: 16px;">
+          <select id="category" required style="margin-bottom: 16px;">
+            <option value="">Выберите категорию</option>
             <option value="technical">Техническая поддержка</option>
             <option value="question">Связаться с менеджером</option>
+            <option value="billing">Вопросы оплаты</option>
             <option value="other">Другое</option>
           </select>
 
@@ -56,40 +110,187 @@
           <label for="description">Описание</label>
           <textarea id="description" maxlength="2000" required placeholder="Подробно опишите вашу ситуацию..."></textarea>
 
-          <button id="submitBtn" type="submit">Отправить боту</button>
+          <button id="submitBtn" type="submit">
+            <span class="spinner"></span>
+            <span>Отправить обращение</span>
+          </button>
         </form>
+        
+        <div id="status" class="status"></div>
+        <div id="devNotice" class="dev-notice">
+          ℹ️ Запущено вне мессенджера. Данные отправляются на указанный webhook.
+        </div>
       </div>
     </div>
 
     <script>
       (function () {
-        const ticketForm = document.getElementById("ticketForm");
-        const webApp = window.WebApp || window.Telegram?.WebApp || null;
+        // === КОНФИГУРАЦИЯ ===
+        const CONFIG = {
+          // Замените на ваш endpoint для приёма данных
+          webhookUrl: 'https://considers-pattern-wagon-municipality.trycloudflare.com/api/ticket',
+          // Таймаут запроса в мс
+          timeout: 15000,
+          // Показывать ли уведомление для разработчиков
+          showDevNotice: true
+        };
 
-        if (webApp) {
-          webApp.ready();
-          webApp.expand?.(); // Разворачиваем на весь экран
+        // === ИНИЦИАЛИЗАЦИЯ ===
+        const ticketForm = document.getElementById('ticketForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusEl = document.getElementById('status');
+        const devNotice = document.getElementById('devNotice');
+        
+        // Определяем окружение
+        const webApp = window.WebApp || null;
+        const isMaxMessenger = !!webApp?.initData;
+        
+        // Показываем заметку для разработки, если нужно
+        if (CONFIG.showDevNotice && !isMaxMessenger) {
+          devNotice.style.display = 'block';
         }
 
-        ticketForm.addEventListener("submit", function (event) {
-          event.preventDefault();
+        // Инициализация WebApp
+        if (webApp) {
+          webApp.ready?.();
+          webApp.expand?.();
+          // Опционально: устанавливаем цвета под тему мессенджера
+          if (webApp.colorScheme === 'dark') {
+            document.documentElement.style.setProperty('--bg', '#1f2937');
+            document.documentElement.style.setProperty('--card', '#374151');
+            document.documentElement.style.setProperty('--text', '#f9fafb');
+          }
+        }
 
-          const data = {
-            action: "create_ticket",
-            title: document.getElementById("title").value.trim(),
-            description: document.getElementById("description").value.trim(),
-            category: document.getElementById("category").value
+        // === ФУНКЦИИ ===
+        
+        // Показ статуса с авто-скрытием
+        function showStatus(message, type = 'info', autoHide = true) {
+          statusEl.textContent = message;
+          statusEl.className = `status ${type}`;
+          
+          if (autoHide && (type === 'success' || type === 'error')) {
+            setTimeout(() => {
+              statusEl.style.display = 'none';
+            }, 5000);
+          }
+        }
+
+        // Блокировка формы при отправке
+        function setLoading(loading) {
+          submitBtn.disabled = loading;
+          submitBtn.classList.toggle('loading', loading);
+          // Блокируем поля ввода
+          ticketForm.querySelectorAll('input, textarea, select').forEach(el => {
+            el.disabled = loading;
+          });
+        }
+
+        // Отправка данных на сервер
+        async function sendTicket(data) {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), CONFIG.timeout);
+
+          try {
+            const response = await fetch(CONFIG.webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+              },
+              body: JSON.stringify(data),
+              signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!response.ok) {
+              const errorText = await response.text().catch(() => '');
+              throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
+            }
+
+            return await response.json().catch(() => ({}));
+          } catch (error) {
+            if (error.name === 'AbortError') {
+              throw new Error('Превышено время ожидания ответа сервера');
+            }
+            if (error.message.includes('Failed to fetch')) {
+              throw new Error('Не удалось подключиться к серверу. Проверьте интернет-соединение.');
+            }
+            throw error;
+          }
+        }
+
+        // Закрытие окна (если возможно)
+        function closeWindow() {
+          // Пробуем разные методы закрытия
+          if (webApp?.close) {
+            webApp.close();
+          } else if (typeof window.close === 'function') {
+            window.close();
+          } else {
+            // Фоллбэк: скроллим вверх и показываем инструкцию
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showStatus('✅ Обращение отправлено! Закройте окно вручную.', 'success', false);
+          }
+        }
+
+        // === ОБРАБОТЧИК ФОРМЫ ===
+        ticketForm.addEventListener('submit', async function (event) {
+          event.preventDefault();
+          setLoading(true);
+          statusEl.style.display = 'none';
+
+          // Собираем данные
+          const formData = {
+            action: 'create_ticket',
+            category: document.getElementById('category').value,
+            title: document.getElementById('title').value.trim(),
+            description: document.getElementById('description').value.trim(),
+            timestamp: new Date().toISOString(),
+            // Добавляем initData для валидации на бэкенде (если в мессенджере)
+            ...(isMaxMessenger && { initData: webApp.initData })
           };
 
-          if (webApp && webApp.sendData) {
-            // Метод преобразует объект в строку и отправляет боту
-            // Приложение при этом автоматически закроется
-            webApp.sendData(JSON.stringify(data));
-          } else {
-            console.log("Данные для отправки:", data);
-            alert("Ошибка: функция sendData доступна только внутри мессенджера.");
+          // Валидация на клиенте (дополнительная)
+          if (!formData.category) {
+            showStatus('Выберите категорию обращения', 'error');
+            setLoading(false);
+            return;
+          }
+          if (formData.title.length < 5) {
+            showStatus('Тема должна содержать минимум 5 символов', 'error');
+            setLoading(false);
+            return;
+          }
+
+          try {
+            // Отправляем на сервер
+            await sendTicket(formData);
+            
+            // Успех
+            showStatus('✅ Обращение успешно отправлено!', 'success', false);
+            ticketForm.reset();
+            
+            // Закрываем окно с небольшой задержкой
+            setTimeout(closeWindow, 1500);
+            
+          } catch (error) {
+            console.error('Ошибка отправки:', error);
+            showStatus(`❌ ${error.message || 'Не удалось отправить обращение'}`, 'error', false);
+          } finally {
+            setLoading(false);
           }
         });
+
+        // === ОТЛАДКА: вывод информации в консоль ===
+        console.log('🚀 MAX WebApp Form loaded');
+        console.log('📡 Env:', isMaxMessenger ? 'MAX Messenger' : 'Browser (dev mode)');
+        if (isMaxMessenger) {
+          console.log('👤 User data available via initData');
+          // ⚠️ Никогда не логируйте initData целиком в продакшене!
+        }
+
       })();
     </script>
   </body>
