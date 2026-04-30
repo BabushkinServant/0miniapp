@@ -1,298 +1,333 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Поддержка</title>
-    <!-- Подключаем MAX WebApp SDK -->
     <script src="https://st.max.ru/js/max-web-app.js"></script>
     <style>
-      :root {
-        --bg: #f3f4f6; --card: #ffffff; --text: #111827; --muted: #6b7280;
-        --accent: #2563eb; --accent-text: #ffffff; --border: #e5e7eb;
-        --success: #10b981; --error: #ef4444;
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent;
-        padding-bottom: 24px;
-      }
-      .wrap { max-width: 600px; margin: 0 auto; padding: 16px; }
-      .card {
-        background: var(--card); border: 1px solid var(--border);
-        border-radius: 16px; padding: 18px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      }
-      h1 { margin: 0 0 16px; font-size: 20px; font-weight: 700; text-align: center; }
-      label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--muted); }
-      
-      input, textarea, select, button {
-        width: 100%; border-radius: 12px; border: 1px solid var(--border);
-        padding: 12px; font-size: 15px; background: #fff; color: var(--text);
-        outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-      }
-      input:focus, textarea:focus, select:focus { 
-        border-color: var(--accent); 
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-      }
-      textarea { min-height: 160px; resize: none; }
-      
-      button {
-        cursor: pointer; border: 0; background: var(--accent);
-        color: var(--accent-text); font-weight: 600; margin-top: 20px;
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-      }
-      button:active { opacity: 0.9; }
-      button:disabled { 
-        background: var(--muted); 
-        cursor: not-allowed; 
-        opacity: 0.7; 
-      }
-      
-      /* Статусы */
-      .status {
-        margin-top: 16px; padding: 12px; border-radius: 12px;
-        font-size: 14px; display: none; text-align: center;
-      }
-      .status.success { 
-        background: rgba(16, 185, 129, 0.1); 
-        color: var(--success); 
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        display: block;
-      }
-      .status.error { 
-        background: rgba(239, 68, 68, 0.1); 
-        color: var(--error); 
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        display: block;
-      }
-      
-      /* Спиннер загрузки */
-      .spinner {
-        width: 16px; height: 16px;
-        border: 2px solid rgba(255,255,255,0.3);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        display: none;
-      }
-      @keyframes spin { to { transform: rotate(360deg); } }
-      button.loading .spinner { display: inline-block; }
-      button.loading span { opacity: 0.9; }
-      
-      /* Для тестирования вне мессенджера */
-      .dev-notice {
-        font-size: 12px; color: var(--muted); text-align: center;
-        margin-top: 12px; padding: 8px; background: rgba(255,193,7,0.1);
-        border-radius: 8px; display: none;
-      }
+        :root {
+            --bg: #f3f4f6; --card: #ffffff; --text: #111827; --muted: #6b7280;
+            --accent: #2563eb; --accent-text: #ffffff; --border: #e5e7eb;
+            --success: #10b981; --error: #ef4444;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent;
+            padding-bottom: 24px;
+        }
+        .wrap { max-width: 600px; margin: 0 auto; padding: 16px; }
+        .card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 { margin: 0 0 16px; font-size: 20px; font-weight: 700; text-align: center; }
+        label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--muted); }
+        
+        input, textarea, select, button {
+            width: 100%; border-radius: 12px; border: 1px solid var(--border);
+            padding: 12px; font-size: 15px; background: #fff; color: var(--text);
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus, textarea:focus, select:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        textarea { min-height: 160px; resize: none; }
+        
+        button {
+            cursor: pointer; border: 0; background: var(--accent);
+            color: var(--accent-text); font-weight: 600; margin-top: 20px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        button:active { opacity: 0.9; }
+        button:disabled { 
+            background: var(--muted); 
+            cursor: not-allowed; 
+            opacity: 0.7; 
+        }
+        
+        .status {
+            margin-top: 16px; padding: 12px; border-radius: 12px;
+            font-size: 14px; display: none; text-align: center;
+        }
+        .status.success { 
+            background: rgba(16, 185, 129, 0.1); 
+            color: var(--success); 
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            display: block;
+        }
+        .status.error { 
+            background: rgba(239, 68, 68, 0.1); 
+            color: var(--error); 
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: block;
+        }
+        
+        .spinner {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        button.loading .spinner { display: inline-block; }
+        button.loading span { opacity: 0.9; }
+        
+        .dev-notice {
+            font-size: 12px; color: var(--muted); text-align: center;
+            margin-top: 12px; padding: 8px; background: rgba(255,193,7,0.1);
+            border-radius: 8px;
+        }
+        .hidden { display: none !important; }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="wrap">
-      <div class="card">
-        <h1>🎫 Новое обращение</h1>
-        
-        <form id="ticketForm">
-          <label for="category">Категория</label>
-          <select id="category" required style="margin-bottom: 16px;">
-            <option value="">Выберите категорию</option>
-            <option value="technical">Техническая поддержка</option>
-            <option value="question">Связаться с менеджером</option>
-            <option value="billing">Вопросы оплаты</option>
-            <option value="other">Другое</option>
-          </select>
+        <div class="card">
+            <h1>🎫 Новое обращение</h1>
+            
+            <form id="ticketForm">
+                <label for="category">Категория</label>
+                <select id="category" required style="margin-bottom: 16px;">
+                    <option value="">Выберите категорию</option>
+                    <option value="technical">Техническая поддержка</option>
+                    <option value="question">Связаться с менеджером</option>
+                </select>
 
-          <label for="title">Тема</label>
-          <input id="title" maxlength="120" required placeholder="Кратко назовите проблему" style="margin-bottom: 16px;" />
+                <label for="title">Тема</label>
+                <input id="title" maxlength="120" required placeholder="Кратко назовите проблему" style="margin-bottom: 16px;" />
 
-          <label for="description">Описание</label>
-          <textarea id="description" maxlength="2000" required placeholder="Подробно опишите вашу ситуацию..."></textarea>
+                <label for="description">Описание</label>
+                <textarea id="description" maxlength="2000" required placeholder="Подробно опишите вашу ситуацию..."></textarea>
 
-          <button id="submitBtn" type="submit">
-            <span class="spinner"></span>
-            <span>Отправить обращение</span>
-          </button>
-        </form>
-        
-        <div id="status" class="status"></div>
-        <div id="devNotice" class="dev-notice">
-          ℹ️ Запущено вне мессенджера. Данные отправляются на указанный webhook.
+                <button id="submitBtn" type="submit">
+                    <span class="spinner"></span>
+                    <span>Отправить обращение</span>
+                </button>
+            </form>
+            
+            <div id="status" class="status"></div>
+            <div id="devNotice" class="dev-notice hidden">
+                ℹ️ Запущено вне мессенджера. Данные отправляются на указанный webhook.
+            </div>
         </div>
-      </div>
     </div>
 
     <script>
-      (function () {
-        // === КОНФИГУРАЦИЯ ===
-        const CONFIG = {
-          // Замените на ваш endpoint для приёма данных
-          webhookUrl: 'http://192.168.34.21:3001',
-          <!--'http://62.113.104.181:8080/api/client/tickets'-->
-          // Таймаут запроса в мс
-          timeout: 15000,
-          // Показывать ли уведомление для разработчиков
-          showDevNotice: true
-        };
+        (function () {
+            // === КОНФИГУРАЦИЯ ===
+            // Используем сервер из .env VITE_API_BASE_URL (для локального теста)
+            // Для production через GitHub Pages нужен публичный URL
+            const CONFIG = {
+                // Этот URL должен быть доступен из интернета (для GitHub Pages)
+                // Если сервер локальный (192.168.34.21:3001), то GitHub Pages не сможет к нему обратиться
+                // Для теста используем localhost или IP
+                apiBaseUrl: 'http://192.168.34.21:3001',  // <-- ЗАМЕНИТЕ НА ВАШ ПУБЛИЧНЫЙ URL
+                timeout: 15000,
+                showDevNotice: true
+            };
 
-        // === ИНИЦИАЛИЗАЦИЯ ===
-        const ticketForm = document.getElementById('ticketForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const statusEl = document.getElementById('status');
-        const devNotice = document.getElementById('devNotice');
-        
-        // Определяем окружение
-        const webApp = window.WebApp || null;
-        const isMaxMessenger = !!webApp?.initData;
-        
-        // Показываем заметку для разработки, если нужно
-        if (CONFIG.showDevNotice && !isMaxMessenger) {
-          devNotice.style.display = 'block';
-        }
+            const ticketForm = document.getElementById('ticketForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const statusEl = document.getElementById('status');
+            const devNotice = document.getElementById('devNotice');
+            
+            const webApp = window.WebApp || null;
+            const isMaxMessenger = !!webApp?.initData;
+            
+            if (CONFIG.showDevNotice && !isMaxMessenger) {
+                devNotice.classList.remove('hidden');
+            }
 
-        // Инициализация WebApp
-        if (webApp) {
-          webApp.ready?.();
-          webApp.expand?.();
-          // Опционально: устанавливаем цвета под тему мессенджера
-          if (webApp.colorScheme === 'dark') {
-            document.documentElement.style.setProperty('--bg', '#1f2937');
-            document.documentElement.style.setProperty('--card', '#374151');
-            document.documentElement.style.setProperty('--text', '#f9fafb');
-          }
-        }
+            if (webApp) {
+                webApp.ready?.();
+                webApp.expand?.();
+                if (webApp.colorScheme === 'dark') {
+                    document.documentElement.style.setProperty('--bg', '#1f2937');
+                    document.documentElement.style.setProperty('--card', '#374151');
+                    document.documentElement.style.setProperty('--text', '#f9fafb');
+                }
+            }
 
-        // === ФУНКЦИИ ===
-        
-        // Показ статуса с авто-скрытием
-        function showStatus(message, type = 'info', autoHide = true) {
-          statusEl.textContent = message;
-          statusEl.className = `status ${type}`;
-          
-          if (autoHide && (type === 'success' || type === 'error')) {
-            setTimeout(() => {
-              statusEl.style.display = 'none';
-            }, 5000);
-          }
-        }
+            function showStatus(message, type, autoHide = true) {
+                statusEl.textContent = message;
+                statusEl.className = `status ${type}`;
+                if (autoHide && (type === 'success' || type === 'error')) {
+                    setTimeout(() => {
+                        statusEl.style.display = 'none';
+                    }, 5000);
+                }
+            }
 
-        // Блокировка формы при отправке
-        function setLoading(loading) {
-          submitBtn.disabled = loading;
-          submitBtn.classList.toggle('loading', loading);
-          // Блокируем поля ввода
-          ticketForm.querySelectorAll('input, textarea, select').forEach(el => {
-            el.disabled = loading;
-          });
-        }
+            function setLoading(loading) {
+                submitBtn.disabled = loading;
+                submitBtn.classList.toggle('loading', loading);
+                ticketForm.querySelectorAll('input, textarea, select').forEach(el => {
+                    el.disabled = loading;
+                });
+            }
 
-        // Отправка данных на сервер
-        async function sendTicket(data) {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), CONFIG.timeout);
+            // 👇 НОВАЯ ФУНКЦИЯ: Отправка меню в чат
+            async function triggerStartMenu(userId, chatId) {
+                try {
+                    const response = await fetch(`${CONFIG.apiBaseUrl}/api/max/trigger-start-menu`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId, chatId })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        console.log('[MiniApp] ✅ Меню отправлено в чат');
+                    } else {
+                        console.error('[MiniApp] ❌ Ошибка:', data.error);
+                    }
+                } catch (err) {
+                    console.error('[MiniApp] ❌ Ошибка вызова trigger-start-menu:', err);
+                }
+            }
 
-          try {
-            const response = await fetch(CONFIG.webhookUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-              },
-              body: JSON.stringify(data),
-              signal: controller.signal
+            async function sendTicket(data) {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), CONFIG.timeout);
+
+                try {
+                    const response = await fetch(`${CONFIG.apiBaseUrl}/api/client/tickets`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+                    if (!response.ok) {
+                        const errorText = await response.text().catch(() => '');
+                        throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
+                    }
+                    return await response.json().catch(() => ({}));
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        throw new Error('Превышено время ожидания ответа сервера');
+                    }
+                    if (error.message.includes('Failed to fetch')) {
+                        throw new Error('Не удалось подключиться к серверу. Проверьте интернет-соединение.');
+                    }
+                    throw error;
+                }
+            }
+
+            function closeWindow() {
+                if (webApp?.close) {
+                    webApp.close();
+                } else if (typeof window.close === 'function') {
+                    window.close();
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    showStatus('✅ Обращение отправлено! Закройте окно вручную.', 'success', false);
+                }
+            }
+
+            // 👇 ОБРАБОТЧИК ДАННЫХ ПОЛЬЗОВАТЕЛЯ ПРИ ЗАГРУЗКЕ
+            if (isMaxMessenger && webApp.initData) {
+                try {
+                    const params = new URLSearchParams(webApp.initData);
+                    const userJson = params.get('user');
+                    const chatJson = params.get('chat');
+                    
+                    if (userJson) {
+                        const user = JSON.parse(userJson);
+                        const chat = chatJson ? JSON.parse(chatJson) : null;
+                        
+                        // Отправляем меню в чат при открытии Mini App
+                        triggerStartMenu(user.id, chat?.chat_id || null);
+                        
+                        console.log('[MiniApp] Пользователь:', user.first_name, 'ID:', user.id);
+                    }
+                } catch (err) {
+                    console.error('[MiniApp] Ошибка парсинга initData:', err);
+                }
+            }
+
+            // === ОБРАБОТЧИК ФОРМЫ ===
+            ticketForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+                setLoading(true);
+                statusEl.style.display = 'none';
+
+                let clientId = 'client_localhost';
+                let userId = null;
+                let chatId = null;
+
+                // Получаем userId и chatId из initData
+                if (isMaxMessenger && webApp.initData) {
+                    try {
+                        const params = new URLSearchParams(webApp.initData);
+                        const userJson = params.get('user');
+                        const chatJson = params.get('chat');
+                        if (userJson) {
+                            const user = JSON.parse(userJson);
+                            userId = user.id;
+                            clientId = `client_max_${user.id}`;
+                        }
+                        if (chatJson) {
+                            const chat = JSON.parse(chatJson);
+                            chatId = chat.chat_id;
+                        }
+                    } catch (err) {
+                        console.error('Ошибка парсинга initData:', err);
+                    }
+                }
+
+                const formData = {
+                    clientId: clientId,
+                    ticket: {
+                        ticketType: 'technical',
+                        title: document.getElementById('title').value.trim(),
+                        description: document.getElementById('description').value.trim(),
+                        category: document.getElementById('category').value,
+                        priority: 'normal',
+                        chatId: chatId || userId?.toString() || 'unknown',
+                        maxChatId: chatId || userId?.toString() || 'unknown',
+                        maxUserId: userId?.toString() || null,
+                        comments: []
+                    }
+                };
+
+                if (!formData.ticket.category) {
+                    showStatus('Выберите категорию обращения', 'error');
+                    setLoading(false);
+                    return;
+                }
+                if (formData.ticket.title.length < 5) {
+                    showStatus('Тема должна содержать минимум 5 символов', 'error');
+                    setLoading(false);
+                    return;
+                }
+
+                try {
+                    const result = await sendTicket(formData);
+                    
+                    if (result.success) {
+                        showStatus('✅ Обращение успешно отправлено!', 'success', false);
+                        ticketForm.reset();
+                        setTimeout(closeWindow, 1500);
+                    } else {
+                        showStatus(`❌ ${result.error || 'Не удалось создать обращение'}`, 'error', false);
+                    }
+                } catch (error) {
+                    console.error('Ошибка отправки:', error);
+                    showStatus(`❌ ${error.message || 'Не удалось отправить обращение'}`, 'error', false);
+                } finally {
+                    setLoading(false);
+                }
             });
 
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-              const errorText = await response.text().catch(() => '');
-              throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
-            }
-
-            return await response.json().catch(() => ({}));
-          } catch (error) {
-            if (error.name === 'AbortError') {
-              throw new Error('Превышено время ожидания ответа сервера');
-            }
-            if (error.message.includes('Failed to fetch')) {
-              throw new Error('Не удалось подключиться к серверу. Проверьте интернет-соединение.');
-            }
-            throw error;
-          }
-        }
-
-        // Закрытие окна (если возможно)
-        function closeWindow() {
-          // Пробуем разные методы закрытия
-          if (webApp?.close) {
-            webApp.close();
-          } else if (typeof window.close === 'function') {
-            window.close();
-          } else {
-            // Фоллбэк: скроллим вверх и показываем инструкцию
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            showStatus('✅ Обращение отправлено! Закройте окно вручную.', 'success', false);
-          }
-        }
-
-        // === ОБРАБОТЧИК ФОРМЫ ===
-        ticketForm.addEventListener('submit', async function (event) {
-          event.preventDefault();
-          setLoading(true);
-          statusEl.style.display = 'none';
-
-          // Собираем данные
-          const formData = {
-            action: 'create_ticket',
-            category: document.getElementById('category').value,
-            title: document.getElementById('title').value.trim(),
-            description: document.getElementById('description').value.trim(),
-            timestamp: new Date().toISOString(),
-            // Добавляем initData для валидации на бэкенде (если в мессенджере)
-            ...(isMaxMessenger && { initData: webApp.initData })
-          };
-
-          // Валидация на клиенте (дополнительная)
-          if (!formData.category) {
-            showStatus('Выберите категорию обращения', 'error');
-            setLoading(false);
-            return;
-          }
-          if (formData.title.length < 5) {
-            showStatus('Тема должна содержать минимум 5 символов', 'error');
-            setLoading(false);
-            return;
-          }
-
-          try {
-            // Отправляем на сервер
-            await sendTicket(formData);
-            
-            // Успех
-            showStatus('✅ Обращение успешно отправлено!', 'success', false);
-            ticketForm.reset();
-            
-            // Закрываем окно с небольшой задержкой
-            setTimeout(closeWindow, 1500);
-            
-          } catch (error) {
-            console.error('Ошибка отправки:', error);
-            showStatus(`❌ ${error.message || 'Не удалось отправить обращение'}`, 'error', false);
-          } finally {
-            setLoading(false);
-          }
-        });
-
-        // === ОТЛАДКА: вывод информации в консоль ===
-        console.log('🚀 MAX WebApp Form loaded');
-        console.log('📡 Env:', isMaxMessenger ? 'MAX Messenger' : 'Browser (dev mode)');
-        if (isMaxMessenger) {
-          console.log('👤 User data available via initData');
-          // ⚠️ Никогда не логируйте initData целиком в продакшене!
-        }
-
-      })();
+            console.log('🚀 MAX WebApp Form loaded');
+            console.log('📡 Env:', isMaxMessenger ? 'MAX Messenger' : 'Browser (dev mode)');
+        })();
     </script>
-  </body>
+</body>
 </html>
